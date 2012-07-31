@@ -1,0 +1,289 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+
+	<title>Scala Programming Language</title>
+
+	<meta name="description"
+		content="Scala is a rapidly growing language that is becoming more popular by the day. In this presentation
+			I will cover the basics of the language as well as various use cases for it">
+	<meta name="author" content="James Ward and Matt Raible">
+
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+	<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet'
+		  type='text/css'>
+
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/smackdown.css">
+	<link rel="stylesheet" href="css/print.css" type="text/css" media="print">
+
+	<link rel="stylesheet" href="lib/zenburn.css">
+
+	<script src="http://www.google.com/jsapi"></script>
+	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+</head>
+
+<body>
+
+<div id="reveal">
+
+<!-- Used to fade in a background when a specific slide state is reached -->
+<div class="state-background"></div>
+
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides">
+<section id="intro">
+	<h1>Introduction to Scala</h1>
+
+	<h3 class="inverted">Bryan Gilbert</h3>
+
+	<p><a href="http://twitter.com/bryangilbert">@BryanGilbert</a></p>
+	<script>
+		// Delicously hacky. Look away.
+		if (navigator.userAgent.match(/(iPhone|iPad|iPod|Android)/i)) document.write('<p style="color: rgba(0,0,0,0.3); text-shadow: none;">(' + 'Swipe to navigate' + ')</p>');
+	</script>
+</section>
+
+<section id="what">
+	<h2>What is Scala?</h2>
+
+	<p>
+		Scala is a general purpose programming language designed to express common programming patterns in a <b>concise</b>, <b>elegant</b>, and <b>type-safe</b> way. It smoothly integrates features of object-oriented and functional languages, enabling Java and other programmers to be more productive.
+	</p>
+</section>
+
+<section id="why">
+	<h2>Why Use Scala?</h2>
+	<br/>
+
+	<div class="column2">
+		<ul>
+			<li><b>Expressive</b></li>
+				<ul>
+					<li>First-Class functions</i>
+					<li>Closures</li>
+				</ul>
+			<br />
+			<li><b>Concise</b></li>
+				<ul>
+					<li>Type Inference</i>
+					<li>Literal syntax for function creation</li>
+				</ul>
+		</ul>
+		<ul>
+			<li><b>Java Interoperability</b></li>
+				<ul>
+					<li>Can reuse java libraries</i>
+					<li>No performance penalty</li>
+				</ul>
+			<br />
+			<li><b>Simplified Concurrency</b></li>
+				<ul>
+					<li>Akka actor model</li>
+					<li>Prefers immutability</li>
+				</ul>
+		</ul>
+	</div>
+</section>
+
+<section>
+
+	<section>
+		<h2>Scala Basics</h2>
+
+		<p>
+			Here is a list of the basic scala concepts that we will cover in this section:
+		</p>
+		<br/>
+
+		<div class="column2">
+			<ul>
+				<li><a href="#/3/1">Variables</a></li>
+				<li><a href="#/3/2">Functions</a></li>
+				<li><a href="#/3/3">Anonymous Functions</a></li>
+				<li><a href="#/3/4">Classes</a></li>
+				<li><a href="#/3/5">Constructors</a></li>
+			</ul>
+			<ul>
+				<li><a href="#/3/6">Named Parameters</a></li>
+				<li><a href="#/3/7">Objects</a></li>
+				<li><a href="#/3/8">Traits</a></li>
+				<li><a href="#/3/9">Abstract Classes</a></li>
+				<li><a href="#/3/10">Generics</a></li>
+			</ul>
+		</div>
+		<div class="down-arrow">&darr;</div>
+	</section>
+
+	<section>
+		<h2>Variables</h2>
+		<p>Values (Immutable Reference)<p>
+		<pre><code class="scala">
+val name = "Steve"
+name = "John" // Compile Error!
+		</code></pre>
+
+		<p>Variables (Mutable Reference)</p>
+		<pre><code class="scala">
+var name = "Steve"
+name = "John" // Compiles
+		</code></pre>
+	</section>
+	<section>
+		<h2>Functions</h2>
+		<p>Defined with 'def'</p>
+		<pre><code class="scala">
+def hello(name: String): String = {
+	"Hello " + name
+}
+println(hello("Bob")) // Prints "Hello Bob"
+		</code></pre>
+		<p>Parens optional for zero parameter functions</p>
+		<pre><code class="scala">
+def twoPlusTwo: Int = {
+	2+2
+}
+printn(twoPlusTwo)
+		</code></pre>
+	</section>
+	<section>
+		<h2>Anonymous Functions</h2>
+		<p>Simple function syntax</p>
+		<pre><code class="scala">
+val addTwo = (x: Int) => x + 2
+println(addTwo(2)) // Prints 4
+		</code></pre>
+		<p>Alternate syntax (more common)</p>
+		<pre><code class="scala">
+val addTwo = { x: Int =>
+	x + 2
+}
+println(addTwo(2)) // Prints 4
+		</code></pre>
+		<p>Partial Application</p>
+		<pre><code class="scala">
+val add = (x: Int, y: Int) => x + y
+val addTwo = add(2, _:Int)
+println(addTwo(2)) // Prints 4
+		</code></pre>
+	</section>
+	<section>
+		<h2>Classes</h2>
+		<p>Basic Class Definition</p>
+		<pre><code class="scala">
+class Sparc {
+	val companyName = "SPARC"
+	def makeProduct(productName: String): String = {
+		companyName + productName
+	}
+}
+val sparc = new Sparc
+println(sparc.makeProduct("et")) // Prints "SPARCet"
+		</code></pre>
+	</section>
+	<section>
+		<h2>Constructors</h2>
+		<p>Basic Class Definition With Constructor</p>
+		<pre><code class="scala">
+class Company(companyName: String) {
+	def makeProduct(productName: String): String = {
+		companyName + productName
+	}
+}
+val sparc = new Company("SPARC")
+println(sparc.makeProduct("et")) // Prints "SPARCet"
+		</code></pre>
+
+	</section>
+	<section>
+		<h2>Named Parameters</h2>
+	</section>
+	<section>
+		<h2>Objects</h2>
+	</section>
+	<section>
+		<h2>Abstract Classes</h2>
+	</section>
+	<section>
+		<h2>Generics</h2>
+	</section>
+</section>
+
+
+</div>
+
+<!-- The navigational controls UI -->
+<aside class="controls">
+	<a class="left" href="#">&#x25C4;</a>
+	<a class="right" href="#">&#x25BA;</a>
+	<a class="up" href="#">&#x25B2;</a>
+	<a class="down" href="#">&#x25BC;</a>
+</aside>
+
+<!-- Displays presentation progress, max value changes via JS to reflect # of slides -->
+<div class="progress"><span></span></div>
+
+</div>
+
+<!-- Optional libraries for code syntax highlighting and classList support in IE9 -->
+<script src="lib/highlight.pack.js"></script>
+<script src="lib/classList.js"></script>
+<script src="js/github-files.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+	// load the google charts library
+	google.load('visualization', '1.0', {'packages':['corechart']});
+
+	// Parse the query string into a key/value object
+	var query = {};
+	location.search.replace(/[A-Z0-9]+?=(\w*)/gi, function (a) {
+		query[ a.split('=').shift() ] = a.split('=').pop();
+	});
+
+	// Fires each time a new slide is activated
+	Reveal.addEventListener('slidechanged', function (event) {
+		// event.indexh & event.indexv
+	});
+
+	Reveal.initialize({
+		// Display controls in the bottom right corner
+		controls:true,
+
+		// Display a presentation progress bar
+		progress:true,
+
+		// If true; each slide will be pushed to the browser history
+		history:true,
+
+		// Loops the presentation, defaults to false
+		loop:false,
+
+		// Flags if mouse wheel navigation should be enabled
+		mouseWheel:true,
+
+		// Apply a 3D roll to links on hover
+		rollingLinks:true,
+
+		// UI style
+		theme:query.theme || 'neon', // default/neon
+
+		// Transition style
+		transition:query.transition || 'default' // default/cube/page/concave/linear(2d)
+	});
+
+	hljs.initHighlightingOnLoad();
+	hljs.tabReplace = '    ';
+
+	$('pre code').each(function() {
+    	hljs.highlightBlock(this, '    ');
+    });
+</script>
+</body>
+</html>
