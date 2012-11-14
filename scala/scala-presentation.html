@@ -109,13 +109,16 @@
 				<li><a href="#/3/3">Anonymous Functions</a></li>
 				<li><a href="#/3/4">Classes</a></li>
 				<li><a href="#/3/5">Constructors</a></li>
+				<li><a href="#/3/6">Imports</a></li>
+				<li><a href="#/3/7">Exception Handling</a></li>
 			</ul>
 			<ul>
-				<li><a href="#/3/6">Named Parameters</a></li>
-				<li><a href="#/3/7">Objects</a></li>
-				<li><a href="#/3/8">Traits</a></li>
-				<li><a href="#/3/9">Abstract Classes</a></li>
-				<li><a href="#/3/10">Generics</a></li>
+				<li><a href="#/3/8">Named Parameters</a></li>
+				<li><a href="#/3/9">Objects</a></li>
+				<li><a href="#/3/10">Traits</a></li>
+				<li><a href="#/3/11">Abstract Classes</a></li>
+				<li><a href="#/3/12">Generics</a></li>
+				<li><a href="#/3/13">Access Modifiers</a></li>
 			</ul>
 		</div>
 		<div class="down-arrow">&darr;</div>
@@ -134,6 +137,11 @@ name = "John" // Compile Error!
 var name = "Steve"
 name = "John" // Compiles
 		</code></pre>
+
+		<p>Lazy Values (Immutable Reference)<p>
+		<pre><code class="scala">
+lazy val name = getNameInSomeExpensiveWay()
+		</code></pre>
 	</section>
 	<section>
 		<h2>Functions</h2>
@@ -149,7 +157,7 @@ println(hello("Bob")) // Prints "Hello Bob"
 def twoPlusTwo: Int = {
 	2+2
 }
-printn(twoPlusTwo)
+println(twoPlusTwo)
 		</code></pre>
 	</section>
 	<section>
@@ -199,20 +207,321 @@ class Company(companyName: String) {
 val sparc = new Company("SPARC")
 println(sparc.makeProduct("et")) // Prints "SPARCet"
 		</code></pre>
-
+	</section>
+	<section>
+		<h2>Imports</h2>
+		<p>Basic Import</p>
+		<pre><code class="scala">
+import java.io.File
+		</code></pre>
+		<p>Named Import</p>
+		<pre><code class="scala">
+import java.io.{File,InputStream}
+		</code></pre>
+		<p>Wild Card Import</p>
+		<pre><code class="scala">
+import java.io._
+		</code></pre>
+	</section>
+	<section>
+		<h2>Exception Handling</h2>
+		<p>Throw Exception</p>
+		<pre><code class="scala">
+throw new IllegalStateException("State is Illegal!")
+		</code></pre>
+		<p>Catch Exception</p>
+		<pre><code class="scala">
+try {
+	danger()
+} catch {
+	case e: IllegalStateException => e.printStackTrace
+	case e: Exception => e.printStackTrace
+}
+		</code></pre>
 	</section>
 	<section>
 		<h2>Named Parameters</h2>
+		<p>Basic Class Instantiation With Named Parameters</p>
+		<pre><code class="scala">
+class Company(companyName: String, employeeCount: Int = 0) {
+	def makeProduct(productName: String): String = {
+		companyName + productName
+	}
+}
+val sparc = new Company (
+	companyName = "SPARC",
+	employeeCount = 150
+)
+		</code></pre>
 	</section>
 	<section>
 		<h2>Objects</h2>
+		<p>Objects in Scala are singleton classes with static variables and methods (No private constructor shenanigans)</p>
+		<pre><code class="scala">
+object SparcSingleton {
+	val company = new Company("SPARC")
+	def printProduct(productName: String) {
+		println(company.makeProduct("et"))
+	}
+}
+		</code></pre>
+	</section>
+	<section>
+		<h2>Traits</h2>
+		<p>Traits can be seen as interfaces that allow optional implementations and values</p>
+		<pre><code class="scala">
+trait Similarity {
+	def isSimilar(x: Any): Boolean
+	def isNotSimilar(x: Any): Boolean = !isSimilar(x)
+}
+		</code></pre>
+		<p>Allow mixing in behavior / multiple inheritance</p>
+		<pre><code class="scala">
+new Job extends HttpInterface with Logging
+		</code></pre>
 	</section>
 	<section>
 		<h2>Abstract Classes</h2>
+		<p>Abstract classes are pretty similar to their Java counterparts</p>
+		<pre><code class="scala">
+abstract class Person(name: String, age: Int) {
+	def sayHi = println("Hi " + name)
+	def doSomething: Unit
+}
+
+class Boss(age: Int, dept: String) extends Person("Boss", age) {
+	def doSomething = println("Order people around in " + dept)	
+}
+
+val thaBoss = new Boss(31, "IT")
+thaBoss.sayHi // Prints "Hi Boss"
+thaBoss.doSomething // Prints "Order people around in IT"
+		</code></pre>
 	</section>
 	<section>
 		<h2>Generics</h2>
+		<p>Generics in scala are extremely powerful when coupled with Scala's type inference</p>
+		<pre><code class="scala">
+val people = List (
+	Person("Bob", 85),
+	Person("Bryan", 27),
+	Person("Steve", 18),
+	Person("Eric", 70)
+)
+
+people.filter(_.age > 50).sortBy(_.name).foreach(p => println(p.name + " is Elderly"))
+		</code></pre>
+		<pre><code class="scala">
+class List[+T] {
+	val iterator = // Internal Iterator
+	def foreach(fun: (T) => Unit) {
+		while(iterator.hasNext) {
+			fun(iterator.next)
+		}
+	}
+}
+		</code></pre>
 	</section>
+	<section>
+		<h2>Access Modifiers</h2>
+		<p>All declaration in Scala is public by default</p>
+		<pre><code class="scala">
+class Person(name: String, val age: Int) { // name is private, age is public
+	def sayHi = println("Hi " + name) // sayHi is public
+}
+		</code></pre>
+		<p>Private allows for fine grained access control</p>
+		<pre><code class="scala">
+class Person() { 
+	private[com.myPackage] val name = "Bob" // Only accessible by this class and myPackage
+	private[this] val age = 30 // Only accessible to this specific instance
+	def sayHi = println("Hi " + name) // sayHi is public
+}
+		</code></pre>
+	</section>
+</section>
+<section>
+	<section>
+		<h2>Collections</h2>
+		<p>
+			Here is a list of the basic scala concepts that we will cover in this section:
+		</p>
+		<br/>
+
+		<div class="column1">
+			<ul>
+				<li><a href="#/3/1">Overview</a></li>
+				<li><a href="#/3/2">List Examples</a></li>
+				<li><a href="#/3/3">Map Examples</a></li>
+			</ul>
+		</div>
+		<div class="down-arrow">&darr;</div>
+	</section>
+	<section>
+		<h2>Overview</h2>
+		<div style="float:left">
+			<img src="assets/CollectionPerformance1.png" />
+		</div>
+		<div>
+			<img src="assets/CollectionPerformance2.png" />
+		</div>
+	</section>
+	<section>
+		<h2>List Examples</h2>
+		<pre><code class="scala">
+case class Person(name: String, age: Int)
+
+val people = List (
+	Person("Bob", 85),
+	Person("Bryan", 27),
+	Person("Steve", 18),
+	Person("Eric", 70),
+	Person("Bob", 8),
+	Person("Steve", 22)
+)
+
+val sumAges = people.map(_.age).sum
+val sumAges = people.map(_.age).fold(0)(_+_)
+
+val grouped = people.groupBy(_.name).mapValues(_.map(_.age).sum)
+val grouped = people.groupBy(p => p.name).mapValues(groupedPeople => groupedPeople.map(_.age).sum)
+		</code></pre>
+	</section>
+	<section>
+		<h2>Map Examples</h2>
+		<pre><code class="scala">
+val people = Map (
+	"bob" -> 30,
+	"steve" -> 20,
+	"josh" -> 44,
+	"bryan" -> 27
+)
+
+people("bob") // 30
+people("james") // Error!
+people.get("james") // None
+people.getOrElseUpdate("james", 10) // 10
+people.getOrElseUpdate("james", 20) // 10
+people.mapValues(_.toString) // "bob" -> "30"…etc
+		</code></pre>
+	</section>
+</section>
+<section>
+	<section>
+		<h2>Advanced Features</h2>
+			<p>
+				Here is a list of a few of the more advanced features I'll cover in this section:
+			</p>
+			<br/>
+
+			<div class="column1">
+				<ul>
+					<li><a href="#/3/1">Option</a></li>
+					<li><a href="#/3/2">Pattern Matching</a></li>
+					<li><a href="#/3/3">Future</a></li>
+					<li><a href="#/3/4">Actor</a></li>
+					<!-- <li><a href="#/3/5">Implicits</a></li> -->
+				</ul>
+			</div>
+			<div class="down-arrow">&darr;</div>
+	</section>
+	<section>
+		<h2>Option</h2>
+		<p>Options are sane abstraction (monad) to handle the absence of values</p>
+		<pre><code class="scala">
+val cleanMaybeResult = Option(dirtyPossibleNullResult)
+
+def findPerson(name: String): Option[Person] = {
+	people.find(_.name == name)
+}
+
+val maybeBob = findPerson("Bob")
+
+val bob = maybeBob.get // Exception if maybeBob is None
+
+val bob = maybeBob match {
+	Some(person) => person
+	None => new Person("Bob")
+}
+
+val bob = maybeBob.getOrElse(new Person("Bob"))
+
+maybeBob foreach { println(_) } // Prints Bob if exists, does nothing otherwise
+		</code></pre>
+	</section>
+	<section>
+		<h2>Pattern Matching</h2>
+		<p>Match is a switch statement on steroids</p>
+		<pre><code class="scala">
+def toMonth(m: Int): String = m match {
+	case 1 => "January"
+	case 2 => "February"
+	case 3 => "March"
+	case 4 => "April"
+	case 5 => "May"
+	case 6 => "June"
+	case 7 => "July"
+	case 8 => "August"
+	case 9 => "September"
+	case 10 => "October"
+	case 11 => "November"
+	case 12 => "December"
+	case _ => throw new Exception("Unrecognized Month")
+		</code></pre>
+		<pre><code class="scala">
+case class Person(name: String, age: Int)
+val bob = Person("Bob", 88)
+bob match {
+	case Person("Bob", age) if age > 50 => println("Old Bob is: " + age)
+	case Person("Bob", age) => println("Bob is: " + age)
+	case Person(_, age) => println("I don't know you but your: " + age)
+}
+		</code></pre>
+	</section>
+	<section>
+		<h2>Future</h2>
+		<p>Futures are an abstraction for easily performing a computation asynchronously</p>
+		<pre><code class="scala">
+val f = Future {
+	performExpensiveComputation()
+} map { res =>
+	performExpensiveTransformation(res)
+} map { res =>
+	performAnotherExpensiveTransformation(res)
+}
+f.onComplete(println(_))
+f.onTimeout(println("Oh no, operation timed out!"))
+f.onError(e => println("Oh no, we caught this exception: " + e))
+		</code></pre>
+	</section>
+	<section>
+		<h2>Actor</h2>
+		<p>An actor allows is a concurrency mechanism that makes it easy to reason about distributed behavior</p>
+		<pre><code class="scala">
+class DatabaseActor extends Actor {
+	def recieve = {
+		case InsertPerson(p) => insert(p)
+		case DeletePerson(pid) => delete(pid)
+		case LookupPerson(pid) => sender ! LookupPersonResponse(lookup(pid))
+		case _ => println("Unrecognized Message!")
+	}
+}
+
+case class InsertPerson(p: Person)
+case class DeletePerson(pid: Int)
+case class LookupPerson(pid: Int)
+case class LookupPersonResponse(p: Person)
+
+val dbActor = system.actorOf(Props[DatabaseActor])
+
+dbActor ! InsertPerson(new Person(123, "Bob"))
+val future = (dbActor ? LookupPerson(123))
+dbActor ! DeletePerson(123)
+		</code></pre>
+	</section>
+</section>
+<section>
+	<h2>Demo / Questions</h2>
 </section>
 
 
